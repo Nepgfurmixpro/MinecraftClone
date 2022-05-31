@@ -1,21 +1,20 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.8)
 
 project (mcclone)
 
 find_package(glfw3 CONFIG REQUIRED)
-target_link_libraries(mcclone PRIVATE glfw)
-
 find_package(glm CONFIG REQUIRED)
-target_link_libraries(mcclone PRIVATE glm::glm)
+find_path(STB_INCLUDE_DIRS "stb_image.h")
 
-find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
-target_link_libraries(mcclone PRIVATE sfml-system-s sfml-graphics-s sfml-window-s)
+find_package(SFML COMPONENTS system window CONFIG REQUIRED)
 
-file(GLOB SOURCES "./src/*.cpp")
-
+file(GLOB SRCS "${PROJECT_SOURCE_DIR}/src/*.cpp")
 include_directories("./src")
 
-add_executable(mcclone ${SOURCES})
+add_executable(${PROJECT_NAME} ${SRCS} "src/renderer.hpp" "src/renderer.cpp")
+
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE PRIVATE glm::glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-window)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${STB_INCLUDE_DIRS})
